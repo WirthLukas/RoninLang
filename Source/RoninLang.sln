@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoninLang.Compiler", "RoninLang.Compiler\RoninLang.Compiler.csproj", "{5385427A-FDE1-441C-8CDA-176699CA1D30}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoninLang.Core", "RoninLang.Core\RoninLang.Core.csproj", "{1820B082-E61D-4D2A-84C1-64470AAB6235}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoninLang.Compiler.Test", "RoninLang.Compiler.Test\RoninLang.Compiler.Test.csproj", "{B2DC294E-9D7E-430D-B6D1-B72947952825}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{5385427A-FDE1-441C-8CDA-176699CA1D30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5385427A-FDE1-441C-8CDA-176699CA1D30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5385427A-FDE1-441C-8CDA-176699CA1D30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1820B082-E61D-4D2A-84C1-64470AAB6235}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1820B082-E61D-4D2A-84C1-64470AAB6235}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1820B082-E61D-4D2A-84C1-64470AAB6235}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1820B082-E61D-4D2A-84C1-64470AAB6235}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2DC294E-9D7E-430D-B6D1-B72947952825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2DC294E-9D7E-430D-B6D1-B72947952825}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2DC294E-9D7E-430D-B6D1-B72947952825}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2DC294E-9D7E-430D-B6D1-B72947952825}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
