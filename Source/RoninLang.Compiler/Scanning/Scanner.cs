@@ -1,5 +1,6 @@
 ﻿using System;
 using RoninLang.Core;
+using RoninLang.Core.ErrorHandling;
 using RoninLang.Core.IO;
 using RoninLang.Core.Scanning;
 

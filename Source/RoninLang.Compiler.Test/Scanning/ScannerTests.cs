@@ -1,9 +1,11 @@
 using System;
 using NUnit.Framework;
 using RoninLang.Compiler;
+using RoninLang.Compiler.ErrorHandling;
 using RoninLang.Compiler.IO;
 using RoninLang.Compiler.Scanning;
 using RoninLang.Core;
+using RoninLang.Core.ErrorHandling;
 using RoninLang.Core.IO;
 using RoninLang.Core.Scanning;
 
@@ -13,6 +15,7 @@ namespace RoninLagn.Compiler.Test.Scanning
     {
         private ISourceReader _sr;
         private IScanner _scanner;
+        private readonly ServiceManager _services = ServiceManager.Instance;
         
         // [SetUp]
         // public void Setup()
@@ -23,6 +26,7 @@ namespace RoninLagn.Compiler.Test.Scanning
         {
             _sr = new StringSourceReader(source);
             _scanner = new Scanner(_sr, new RoninNameManager(_sr));
+            _services.Reset<IErrorHandler>(new ErrorHandler(_sr));
         }
         
         [Test]
