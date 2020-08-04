@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using RoninLang.Core.ErrorHandling;
 
 namespace RoninLang.Compiler.ErrorHandling
@@ -50,7 +51,11 @@ namespace RoninLang.Compiler.ErrorHandling
         /// <param name="errorType">Type of error to be instantiated</param>
         /// <param name="firstParameter">First additional info parameter.</param>
         /// <param name="furtherParameter">Further info parameters.</param>
-        public Error(ErrorType errorType, object firstParameter, params object[] furtherParameter) : this(errorType, firstParameter)
-            => furtherParameter.CopyTo(_parameters, 1);
+        public Error(ErrorType errorType, object firstParameter, params object[] furtherParameter) : this(errorType)
+        {
+            var list = new List<object>() {firstParameter};
+            list.AddRange(furtherParameter);
+            _parameters = list.ToArray();
+        }
     }
 }

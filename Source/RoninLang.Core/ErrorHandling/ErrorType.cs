@@ -2,6 +2,11 @@
 
 namespace RoninLang.Core.ErrorHandling
 {
+    public enum ErrorClass : byte
+    {
+        Lexical, Syntax
+    }
+    
     public struct ErrorType
     {
         public readonly int ErrorNumber;
@@ -16,10 +21,8 @@ namespace RoninLang.Core.ErrorHandling
         }
         
         public static readonly ErrorType IntegerOverflow = new ErrorType(1, ErrorClass.Lexical, "Integer overflow");
-    }
-
-    public enum ErrorClass : byte
-    {
-        Lexical
+        
+        public static readonly ErrorType SymbolExpected = new ErrorType(21, ErrorClass.Syntax, "{0} expected but found {1}");
+        public static readonly ErrorType GeneralSyntaxError = new ErrorType(49, ErrorClass.Syntax, "Syntax Error: {0}");
     }
 }

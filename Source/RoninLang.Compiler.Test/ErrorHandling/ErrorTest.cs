@@ -6,6 +6,12 @@ namespace RoninLang.Compiler.Test.ErrorHandling
 {
     public class ErrorTest
     {
+        private void CheckErrorObject(Error error, int errorNumber, ErrorClass errorClass, string errorMessage) {
+            Assert.AreEqual(errorClass, error.ErrorClass);
+            Assert.AreEqual(errorNumber, error.Number);
+            Assert.AreEqual(errorMessage, error.Message);
+        }
+        
         [Test]
         public void Test_ErrorsWithoutFormatString() {
             var error = new Error(ErrorType.IntegerOverflow);
@@ -18,11 +24,14 @@ namespace RoninLang.Compiler.Test.ErrorHandling
             // error = new Error(Error.ErrorType.POSITIVE_ARRAY_SIZE_EXPECTED);
             // checkErrorObject(error, 56, Error.ErrorClass.SEMANTICAL, "Array size must be a positive integer");        
         }
+
+        [Test]
+        public void Test_ErrorsWithTwoParameters() {
+            Error error = new Error(ErrorType.SymbolExpected, "foo", "bar");
+            CheckErrorObject(error, 21, ErrorClass.Syntax, "foo expected but found bar");
         
-        private void CheckErrorObject(Error error, int errorNumber, ErrorClass errorClass, string errorMessage) {
-            Assert.AreEqual(errorClass, error.ErrorClass);
-            Assert.AreEqual(errorNumber, error.Number);
-            Assert.AreEqual(errorMessage, error.Message);
+            // error = new Error(Error.ErrorType.OPERATOR_OPERAND_TYPE_MISMATCH, "&&", "bool");
+            // checkErrorObject(error, 58, Error.ErrorClass.SEMANTICAL, "Operator && requires a bool operand");
         }
     }
 }

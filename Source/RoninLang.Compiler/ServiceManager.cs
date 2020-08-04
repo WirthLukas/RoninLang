@@ -21,11 +21,17 @@ namespace RoninLang.Compiler
         public void AddService<T>(T service) where T : class
         {
             var key = typeof(T).Name;
+            AddServiceAs(key, service);
+        }
 
-            if (_services.ContainsKey(key))
-                throw new Exception($"Already using System with name {key}");
+        public void AddServiceAs<T>(string subTypeName, T service)
+        {
+            if (subTypeName == null) throw new ArgumentNullException(nameof(subTypeName));
             
-            _services.Add(key, service ?? throw new ArgumentNullException(nameof(service)));
+            if (_services.ContainsKey(subTypeName))
+                throw new Exception($"Already using System with name {subTypeName}");
+            
+            _services.Add(subTypeName, service ?? throw new ArgumentNullException(nameof(service)));
         }
 
         public void Reset<T>(T newService) where T : class
