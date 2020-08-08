@@ -12,6 +12,6 @@
         Identifier, Number, String,
             
         // Delimiters
-        Assign, Semicolon, LPar, RPar, LBracket, RBracket, Arrow
+        Assign, Semicolon, Colon, LPar, RPar, LBracket, RBracket, Arrow
     }
 }

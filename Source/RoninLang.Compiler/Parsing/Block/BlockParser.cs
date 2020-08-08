@@ -8,7 +8,7 @@ namespace RoninLang.Compiler.Parsing.Block
     {
         protected override void ParseSpecificPart()
         {
-            Parser blockParser = LastParsedToken.Symbol switch
+            Parser? blockParser = LastParsedToken.Symbol switch
             {
                 Symbol.LBracket => Parser.Factory.Create<BracketsBlockParser>(),
                 Symbol.Arrow => Parser.Factory.Create<ArrowBlockParser>(),
@@ -18,7 +18,7 @@ namespace RoninLang.Compiler.Parsing.Block
             if (blockParser == null)
             {
                 ServiceManager.Instance
-                    .GetService<IErrorHandler>()
+                    .GetService<IErrorHandler>()?
                     .ThrowGeneralSyntaxError("expected Block Opening ('{' or => Symbol)");
             }
             else

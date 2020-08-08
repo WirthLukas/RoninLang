@@ -7,7 +7,7 @@ namespace RoninLang.Compiler.Parsing.Block
         protected override void ParseSpecificPart()
         {
             ParseSymbol(Symbol.Arrow);
-            // TODO Parse rest
+            ParseSymbol(Factory.Create<StatementParser>());
         }
     }
 }

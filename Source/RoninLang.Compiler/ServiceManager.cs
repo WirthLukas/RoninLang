@@ -44,22 +44,22 @@ namespace RoninLang.Compiler
             _services[key] = newService;
         }
 
-        public T GetService<T>() where T : class
+        public T? GetService<T>() where T : class
         {
             var key = typeof(T).Name;
             return GetService<T>(key);
         }
         
-        public T GetService<T>(string subTypeName) where T : class
+        public T? GetService<T>(string subTypeName) where T : class
         {
             if (subTypeName == null) throw new ArgumentNullException(nameof(subTypeName));
-            
+
             if (!_services.ContainsKey(subTypeName))
-                throw new Exception("No service registered for that type");
+                return null;
 
             return _services[subTypeName] as T ?? throw new Exception($"Cannot cast service {subTypeName} to {typeof(T).Name}");
         }
 
-        public T GetService<T>(Type subType) where T : class => GetService<T>(subType.Name);
+        public T? GetService<T>(Type subType) where T : class => GetService<T>(subType.Name);
     }
 }

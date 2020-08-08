@@ -4,27 +4,29 @@ using RoninLang.Core;
 using RoninLang.Core.ErrorHandling;
 using RoninLang.Core.Parsing;
 using RoninLang.Core.Scanning;
-
-#nullable enable
+using RoninLang.Core.Semantics;
 
 namespace RoninLang.Compiler.Parsing
 {
     public abstract partial class Parser : IParser
     {
-        private readonly IScanner _scanner;
         private Token _lastParsedToken;
         
+        protected readonly IScanner Scanner;
+        protected readonly ISymbolTable SymbolTable;
+        // protected readonly ICodeGenerator CodeGenerator;
+
         /// <summary>
         /// true if parse() was not called yet or parsing was successful, false otherwise.
         /// </summary>
         public bool ParsingSuccessfulUntilNow { get; protected set; } = true;
-
-        protected IScanner Scanner => _scanner;
         protected Token LastParsedToken => _lastParsedToken;
 
         protected Parser()
         {
-            _scanner = Factory.Scanner ?? throw new AccessViolationException("ParserFactory not initialized!");
+            Scanner = ServiceManager.Instance.GetService<IScanner>() ?? throw new AccessViolationException("No IScanner Service Registered");
+            SymbolTable = ServiceManager.Instance.GetService<ISymbolTable>() ?? throw new AccessViolationException("No ISymbolTable Service Registered");
+            // CodeGenerator = ServiceManager.Instance.GetService<ICodeGenerator>() ?? throw new AccessViolationException("No ICodeGenerator Service Registered");
         }
 
         public bool Parse()
@@ -44,18 +46,18 @@ namespace RoninLang.Compiler.Parsing
         {
             if (ParsingSuccessfulUntilNow)
             {
-                _lastParsedToken = _scanner.CurrentToken;
+                _lastParsedToken = Scanner.CurrentToken;
                 ParsingSuccessfulUntilNow = _lastParsedToken.Symbol == symbol;
 
                 if (!ParsingSuccessfulUntilNow)
                 {
                     ServiceManager.Instance
-                        .GetService<IErrorHandler>()
+                        .GetService<IErrorHandler>()?
                         .ThrowSymbolExpectedError(symbol, _lastParsedToken.Symbol);
                 }
             }
             
-            _scanner.NextToken();
+            Scanner.NextToken();
         }
 
         /// <summary>
@@ -86,6 +88,34 @@ namespace RoninLang.Compiler.Parsing
         {
             ParseSymbol(Symbol.Number);
             return _lastParsedToken.Value;
+        }
+
+        protected void ParseAlternatives(Symbol firstOption, params Symbol[] furtherOptions)
+        {
+            if (ParsingSuccessfulUntilNow)
+            {
+                _lastParsedToken = Scanner.CurrentToken;
+                var currentSymbol = _lastParsedToken.Symbol;
+                bool symbolFound = currentSymbol == firstOption;
+
+                foreach (var option in furtherOptions)
+                    symbolFound = symbolFound || currentSymbol == option;
+
+                ParsingSuccessfulUntilNow = symbolFound;
+
+                if (!symbolFound)
+                {
+                    // TODO Raise Error
+                }
+            }
+            
+            Scanner.NextToken();
+        }
+
+        protected void Semantics(Action semanticAction)
+        {
+            if (ParsingSuccessfulUntilNow)
+                semanticAction();
         }
     }
 }

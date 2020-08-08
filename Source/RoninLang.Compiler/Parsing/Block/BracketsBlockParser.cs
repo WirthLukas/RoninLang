@@ -7,8 +7,11 @@ namespace RoninLang.Compiler.Parsing.Block
         protected override void ParseSpecificPart()
         {
             ParseSymbol(Symbol.LBracket);
-            
-            // TODO Inside Block
+
+            while (ParsingSuccessfulUntilNow && Scanner.CurrentToken.Symbol != Symbol.RBracket)
+            {
+                ParseSymbol(Parser.Factory.Create<StatementParser>());
+            }
 
             ParseSymbol(Symbol.RBracket);
         }
