@@ -13,6 +13,7 @@ namespace RoninLang.Compiler.Parsing
         private Token _lastParsedToken;
         
         protected readonly IScanner Scanner;
+        protected readonly IErrorHandler ErrorHandler;
         protected readonly ISymbolTable SymbolTable;
         // protected readonly ICodeGenerator CodeGenerator;
 
@@ -24,9 +25,11 @@ namespace RoninLang.Compiler.Parsing
 
         protected Parser()
         {
-            Scanner = ServiceManager.Instance.GetService<IScanner>() ?? throw new AccessViolationException("No IScanner Service Registered");
-            SymbolTable = ServiceManager.Instance.GetService<ISymbolTable>() ?? throw new AccessViolationException("No ISymbolTable Service Registered");
-            // CodeGenerator = ServiceManager.Instance.GetService<ICodeGenerator>() ?? throw new AccessViolationException("No ICodeGenerator Service Registered");
+            var serviceManager = ServiceManager.Instance;
+            Scanner = serviceManager.GetService<IScanner>() ?? throw new AccessViolationException("No IScanner Service Registered");
+            ErrorHandler = serviceManager.GetService<IErrorHandler>() ?? throw new AccessViolationException("No IErrorHandler Service Registered");
+            SymbolTable = serviceManager.GetService<ISymbolTable>() ?? throw new AccessViolationException("No ISymbolTable Service Registered");
+            // CodeGenerator = serviceManager.GetService<ICodeGenerator>() ?? throw new AccessViolationException("No ICodeGenerator Service Registered");
         }
 
         public bool Parse()
@@ -51,9 +54,7 @@ namespace RoninLang.Compiler.Parsing
 
                 if (!ParsingSuccessfulUntilNow)
                 {
-                    ServiceManager.Instance
-                        .GetService<IErrorHandler>()?
-                        .ThrowSymbolExpectedError(symbol, _lastParsedToken.Symbol);
+                    ErrorHandler.ThrowSymbolExpectedError(symbol, _lastParsedToken.Symbol);
                 }
             }
             
@@ -105,7 +106,8 @@ namespace RoninLang.Compiler.Parsing
 
                 if (!symbolFound)
                 {
-                    // TODO Raise Error
+                    // TODO Optimize Smybol not found
+                    // ErrorHandler.ThrowSymbolExpectedError(firstOption, _lastParsedToken.Symbol);
                 }
             }
             

@@ -20,5 +20,8 @@ namespace RoninLang.Compiler.ErrorHandling
             => @this.Raise(
                 new Error(ErrorType.GeneralSyntaxError, msg)
             );
+
+        public static void ThrowNameAlreadyDefined(this IErrorHandler @this, string type, string name, string contextName)
+            => @this.Raise(new Error(ErrorType.NameAlreadyDefined, new [] { type, name, contextName }));
     }
 }

@@ -29,7 +29,6 @@ namespace RoninLang.Compiler
         /// After a call of readName SourceReader.getCurrentChar() returns the first
         /// character of the source code that is not part of the identifier.
         /// </summary>
-        /// <param name="token">Token which corresponds to the name read.</param>
         public override Token ReadName()
         {
             string name = base.ReadString();

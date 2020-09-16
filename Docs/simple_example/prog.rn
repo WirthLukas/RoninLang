@@ -1,0 +1,48 @@
+struct Node(var item: int) {
+    var next: ref Node
+}
+
+struct List(var start: ref Node)
+
+@:ext
+fun isLast(node: Node) => node.next == null;
+
+@:ext
+fun isEmpty(list: List) => list.start == null;
+
+@:ext
+fun add(list: List, item: int) {
+    val newNode: ref Node = alloc Node(item);
+
+    if (list.isEmpty()) {
+        list.start = newNode;
+        return;
+    }
+
+    var current: Node = val list.start;
+
+    while(!current.isLast()) current = val current.next;
+
+    current.next = newNode;
+}
+
+@:ext
+fun forEach(list: List, exec: (item: Int) => void) {
+    if (list.isEmpty()) return;
+
+    var current = list.start;
+
+    do {
+        exec(current.value.item);
+        current = current.value.next;
+    } while(current != null);
+}
+
+fun main(): void {
+    println("Test prog");
+    val list = List();
+
+    list.add(10);
+    list.add(20);
+    list.forEach(i => println(i));
+}

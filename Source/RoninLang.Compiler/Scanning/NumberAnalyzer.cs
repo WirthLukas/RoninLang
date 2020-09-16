@@ -32,9 +32,7 @@ namespace RoninLang.Compiler.Scanning
 
             if (val > MaxInteger)
             {
-                // TODO use Exception Handling there?
-                // errorHandler.ThrowIntegerOverflow();
-                ServiceManager.Instance.GetService<IErrorHandler>().ThrowIntegerOverflow();
+                ServiceManager.Instance.GetService<IErrorHandler>()?.ThrowIntegerOverflow();
             }
 
             return val;

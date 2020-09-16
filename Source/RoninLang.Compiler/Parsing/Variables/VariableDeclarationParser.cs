@@ -1,4 +1,5 @@
-﻿using RoninLang.Compiler.Parsing.Expressions;
+﻿using RoninLang.Compiler.ErrorHandling;
+using RoninLang.Compiler.Parsing.Expressions;
 using RoninLang.Core;
 
 namespace RoninLang.Compiler.Parsing.Variables
@@ -9,10 +10,16 @@ namespace RoninLang.Compiler.Parsing.Variables
         {
             ParseAlternatives(Symbol.Var, Symbol.Val);
             int name = ParseIdentifier();
+            var variableName = LastParsedToken.ClearName;
             
             Semantics(() =>
             {
-                // validate variable
+                bool success = SymbolTable.NewVariable(variableName);
+
+                if (!success)
+                {
+                    ErrorHandler.ThrowNameAlreadyDefined("variable", variableName, "scope");
+                }
             });
 
             if (LastParsedToken.Symbol == Symbol.Colon)
@@ -27,9 +34,7 @@ namespace RoninLang.Compiler.Parsing.Variables
             }
             else
             {
-                // no type definition nor an assignment => raise error
-                // TODO Raise an Error
-
+                ErrorHandler.ThrowGeneralSyntaxError("variable declaration needs either a type definition or an assignment");
                 ParsingSuccessfulUntilNow = false;
             }
             

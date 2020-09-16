@@ -1,4 +1,5 @@
-﻿using RoninLang.Compiler.Parsing.Block;
+﻿using RoninLang.Compiler.ErrorHandling;
+using RoninLang.Compiler.Parsing.Block;
 using RoninLang.Compiler.Parsing.Variables;
 using RoninLang.Core;
 
@@ -20,7 +21,13 @@ namespace RoninLang.Compiler.Parsing
             // Semantic Check
             Semantics(() =>
             {
-                SymbolTable.NewFunction(FunctionName);
+                bool success = SymbolTable.NewFunction(FunctionName);
+
+                if (!success)
+                {
+                    ErrorHandler.ThrowNameAlreadyDefined("function", FunctionName, "module");
+                }
+                
                 // CodeGenerator.NewFunction(FunctionName);
             });
             

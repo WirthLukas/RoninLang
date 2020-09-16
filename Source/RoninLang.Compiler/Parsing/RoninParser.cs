@@ -7,6 +7,11 @@ namespace RoninLang.Compiler.Parsing
         {
             var function = Parser.Factory.Create<FunctionParser>();
             ParseSymbol(function);
+            
+            if (function.FunctionName != "main")
+            {
+                
+            }
         }
     }
 }

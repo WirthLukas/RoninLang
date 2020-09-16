@@ -4,10 +4,10 @@ namespace RoninLang.Core.ErrorHandling
 {
     public enum ErrorClass : byte
     {
-        Lexical, Syntax
+        Lexical, Syntax, Semantical
     }
     
-    public struct ErrorType
+    public readonly struct ErrorType
     {
         public readonly int ErrorNumber;
         public readonly ErrorClass ErrorClass;
@@ -24,5 +24,8 @@ namespace RoninLang.Core.ErrorHandling
         
         public static readonly ErrorType SymbolExpected = new ErrorType(21, ErrorClass.Syntax, "{0} expected but found {1}");
         public static readonly ErrorType GeneralSyntaxError = new ErrorType(49, ErrorClass.Syntax, "Syntax Error: {0}");
+        
+        // 0: type (Function, Variable); 1: name; 2: context name (Scope, Module)
+        public static readonly ErrorType NameAlreadyDefined = new ErrorType(54, ErrorClass.Semantical, "{0} {1} is already defined in current {2}");
     }
 }

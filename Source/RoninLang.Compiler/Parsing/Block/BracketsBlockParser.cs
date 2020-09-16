@@ -8,7 +8,7 @@ namespace RoninLang.Compiler.Parsing.Block
         {
             ParseSymbol(Symbol.LBracket);
 
-            while (ParsingSuccessfulUntilNow && Scanner.CurrentToken.Symbol != Symbol.RBracket)
+            while (ParsingSuccessfulUntilNow && Scanner.CurrentToken.Symbol != Symbol.RBracket && Scanner.CurrentToken.Symbol != Symbol.NoSy)
             {
                 ParseSymbol(Parser.Factory.Create<StatementParser>());
             }
