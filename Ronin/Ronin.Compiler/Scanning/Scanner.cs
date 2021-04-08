@@ -35,16 +35,16 @@ namespace Ronin.Compiler.Scanning
                 {
                     _currentToken = HandleTerminals(_sourceReader);
                 }
-            } while (!done && _currentToken.Symbol == (int) Symbol.NoSy);
+            } while (!done && _currentToken.Symbol == (uint) Symbol.NoSy);
 
             return _currentToken;
         }
 
         private static Token HandleDigit(ISourceReader sourceReader) => 
-            new Token(symbol: (int)Symbol.Number,
+            new Token(symbol: (uint)Symbol.Number,
                 value: NumberAnalyzer.ReadNumber(sourceReader));
 
         private static Token HandleTerminals(ISourceReader sourceReader) => 
-            new Token((int) TerminalsManager.ReadTerminalSymbol(sourceReader));
+            new Token((uint) TerminalsManager.ReadTerminalSymbol(sourceReader));
     }
 }

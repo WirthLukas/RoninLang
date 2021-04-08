@@ -5,8 +5,4 @@
 	<Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Token.cs~RF4b637aa0.TMP" />
-  </ItemGroup>
-
 </Project>

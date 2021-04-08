@@ -5,10 +5,10 @@ namespace Ronin.Core
 {
     public readonly struct Token
     {
-        public readonly int Symbol;
+        public readonly uint Symbol;
         public readonly int? Value; 
 
-        public Token(int symbol = 0, int? value = null)
+        public Token(uint symbol = 0, int? value = null)
         {
             Symbol = symbol;
             Value = value;
@@ -21,6 +21,6 @@ namespace Ronin.Core
             return sb.ToString();
         }
 
-        public static Func<int, string> SymbolConverter = symbol => symbol.ToString();
+        public static Func<uint, string> SymbolConverter = symbol => symbol.ToString();
     }
 }

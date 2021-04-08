@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Ronin.Compiler;
 using Ronin.Compiler.IO;
+using Ronin.Compiler.Parsing;
 using Ronin.Compiler.Scanning;
 using Ronin.Core;
 
@@ -22,13 +23,17 @@ namespace Ronin.Repl
                 if (text != "break()")
                 {
                     var scanner = new Scanner(new StringSourceReader(text));
+                    scanner.NextToken();
+                    //foreach (var token in MakeTokens(scanner))
+                    //{
+                    //    Console.Write($"{token},");
+                    //}
 
-                    foreach (var token in MakeTokens(scanner))
-                    {
-                        Console.Write($"{token},");
-                    }
-
-                    Console.WriteLine();
+                    //Console.WriteLine();
+                    ServiceManager.Instance.Reset<IScanner>(scanner);
+                    var parser = new RoninParser();
+                    var result = parser.Parse();
+                    Console.WriteLine(result);
                 }
             }
         }
