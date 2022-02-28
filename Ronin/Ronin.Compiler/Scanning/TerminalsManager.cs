@@ -48,6 +48,21 @@ namespace Ronin.Compiler.Scanning
                     sourceReader.NextChar();
                     break;
 
+                case '=':
+                    //sourceReader.NextChar();
+
+                    //if (sourceReader.CurrentChar == '=')
+                    //{
+
+                    //}
+                    //else
+                    //{
+                        
+                    //}
+                    result = Symbol.Assign;
+                    sourceReader.NextChar();
+                    break;
+
                 case '(':
                     result = Symbol.LPar;
                     sourceReader.NextChar();

@@ -3,8 +3,8 @@ namespace Ronin.Core
 {
     public interface IScanner
     {
-        Token CurrentToken { get; }
+        ref readonly Token CurrentToken { get; }
 
-        Token NextToken();
+        ref readonly Token NextToken();
     }
 }

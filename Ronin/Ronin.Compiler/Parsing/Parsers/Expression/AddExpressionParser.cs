@@ -7,17 +7,31 @@ namespace Ronin.Compiler.Parsing.Parsers.Expression
     {
         public override TokenNode Parse()
         {
-            var left = ParseSymbol(new TermParser());
-            var currentSymbol = Scanner.CurrentToken.Symbol;
+            //var currentSymbol = Scanner.CurrentToken.Symbol;
+            //TokenNode left;
 
-            while (currentSymbol == (uint) Symbol.Plus || currentSymbol == (uint) Symbol.Minus)
+            //if (currentSymbol == (uint) Symbol.Plus || currentSymbol == (uint) Symbol.Minus)
+            //{
+            //    //ParseAlternatives(Symbol.Plus, Symbol.Minus);
+            //    ParseSymbol((Symbol)currentSymbol);
+            //    left = new UnaryOpNode(LastParsedToken, ParseSymbol(new TermParser()));
+            //}
+            //else
+            //{
+            //    left = ParseSymbol(new TermParser());
+            //}
+
+            var left = ParseSymbol<TermParser>();
+            var currentSymbol = (Symbol) Scanner.CurrentToken.Symbol;
+
+            while (currentSymbol == Symbol.Plus || currentSymbol == Symbol.Minus)
             {
                 ParseAlternatives(Symbol.Plus, Symbol.Minus);
                 // should be true, because scanner had the token
                 var operatorToken = LastParsedToken;
-                var right = ParseSymbol(new TermParser());
+                var right = ParseSymbol<TermParser>();
                 left = new BinOpNode(operatorToken, left, right);
-                currentSymbol = Scanner.CurrentToken.Symbol;
+                currentSymbol = (Symbol) Scanner.CurrentToken.Symbol;
             }
 
             return left;

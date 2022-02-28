@@ -1,4 +1,6 @@
-﻿using Ronin.Core;
+﻿using Ronin.Compiler.ErrorHandling;
+using Ronin.Core;
+using Ronin.Core.ErrorHandling;
 
 namespace Ronin.Compiler.Scanning
 {
@@ -14,8 +16,9 @@ namespace Ronin.Compiler.Scanning
         /// character of the source code that is not part of the number.
         /// </summary>
         /// <param name="sourceReader">Source reader</param>
+        /// <param name="errorHandler">error handler</param>
         /// <returns>The number scanned</returns>
-        public static int ReadNumber(ISourceReader sourceReader)
+        public static int ReadNumber(ISourceReader sourceReader, IErrorHandler errorHandler)
         {
             int val = 0;
             char? current = sourceReader.CurrentChar;
@@ -29,8 +32,7 @@ namespace Ronin.Compiler.Scanning
 
             if (val > MaxInteger)
             {
-                // TODO: Error Handling
-                // ServiceManager.Instance.GetService<IErrorHandler>()?.ThrowIntegerOverflow();
+                errorHandler.ThrowIntegerOverflow();
             }
 
             return val;

@@ -4,13 +4,15 @@ namespace Ronin.Compiler.Parsing.AST
 {
     public class TokenNode
     {
-        public Token Token { get; }
+        private readonly Token _token;
+
+        public ref readonly Token Token => ref _token;
 
         public TokenNode(Token token)
         {
-            Token = token;
+            _token = token;
         }
 
-        public override string ToString() => $"{{{Token}}}";
+        public override string ToString() => $"{{{_token}}}";
     }
 }

@@ -1,21 +1,27 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Ronin.Core;
+using Ronin.Core.ErrorHandling;
 
 namespace Ronin.Compiler.Scanning
 {
     public class Scanner : IScanner
     {
         private readonly ISourceReader _sourceReader;
+        private readonly IErrorHandler _errorHandler;
+        private readonly NameManager _nameManager;
         private Token _currentToken;
 
-        public Token CurrentToken => _currentToken;
+        public ref readonly Token CurrentToken => ref _currentToken;
 
-        public Scanner(ISourceReader sourceReader)
+        public Scanner(ISourceReader sourceReader, IErrorHandler errorHandler, NameManager nameManager)
         {
             _sourceReader = sourceReader ?? throw new ArgumentNullException(nameof(sourceReader));
+            _errorHandler = errorHandler ?? throw new ArgumentNullException(nameof(errorHandler));
+            _nameManager = nameManager ?? throw new ArgumentNullException(nameof(nameManager));
         }
 
-        public Token NextToken()
+        public ref readonly Token NextToken()
         {
             bool done = false;
 
@@ -28,7 +34,12 @@ namespace Ronin.Compiler.Scanning
                 }
                 else if (char.IsDigit(_sourceReader.CurrentChar.Value))
                 {
-                    _currentToken = HandleDigit(_sourceReader);
+                    _currentToken = HandleDigit(_sourceReader, _errorHandler);
+                    done = true;
+                }
+                else if (_nameManager.IsValidStartOfName(_sourceReader.CurrentChar.Value))
+                {
+                    _currentToken = _nameManager.ReadName();
                     done = true;
                 }
                 else
@@ -37,14 +48,16 @@ namespace Ronin.Compiler.Scanning
                 }
             } while (!done && _currentToken.Symbol == (uint) Symbol.NoSy);
 
-            return _currentToken;
+            return ref _currentToken;
         }
 
-        private static Token HandleDigit(ISourceReader sourceReader) => 
-            new Token(symbol: (uint)Symbol.Number,
-                value: NumberAnalyzer.ReadNumber(sourceReader));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Token HandleDigit(ISourceReader sourceReader, IErrorHandler errorHandler) =>
+            new Token(
+                symbol: (uint) Symbol.Number,
+                value: NumberAnalyzer.ReadNumber(sourceReader, errorHandler));
 
-        private static Token HandleTerminals(ISourceReader sourceReader) => 
-            new Token((uint) TerminalsManager.ReadTerminalSymbol(sourceReader));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Token HandleTerminals(ISourceReader sourceReader) => new Token((uint) TerminalsManager.ReadTerminalSymbol(sourceReader));
     }
 }

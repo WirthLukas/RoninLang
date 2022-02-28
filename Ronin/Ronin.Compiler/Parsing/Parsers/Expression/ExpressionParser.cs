@@ -6,7 +6,7 @@ namespace Ronin.Compiler.Parsing.Parsers.Expression
     {
         public override TokenNode Parse()
         {
-            return ParseSymbol(new AddExpressionParser());
+            return ParseSymbol<AddExpressionParser>();
         }
     }
 }

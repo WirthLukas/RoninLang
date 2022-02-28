@@ -1,4 +1,6 @@
-﻿using Ronin.Compiler.Parsing.AST;
+﻿using Ronin.Compiler.ErrorHandling;
+using Ronin.Compiler.Parsing.AST;
+using Ronin.Core;
 
 namespace Ronin.Compiler.Parsing.Parsers.Expression
 {
@@ -6,37 +8,39 @@ namespace Ronin.Compiler.Parsing.Parsers.Expression
     {
         public override TokenNode Parse()
         {
-            TokenNode node = null;
+            TokenNode? node = null;
 
-            switch (Scanner.CurrentToken.Symbol)
+            switch ((Symbol) Scanner.CurrentToken.Symbol)
             {
-                case (uint)Symbol.Plus:
-                case (uint)Symbol.Minus:
+                case Symbol.Plus:
+                case Symbol.Minus:
                     ParseAlternatives(Symbol.Plus, Symbol.Minus);
-                    node = new UnaryOpNode(LastParsedToken, ParseSymbol(new FactorParser()));
+                    node = new UnaryOpNode(LastParsedToken, ParseSymbol<FactorParser>());
                     break;
 
-                case (uint)Symbol.Number:
-                    int val = ParseNumber();
+                case Symbol.Number:
+                    /*int val = */ParseNumber();
                     node = new TokenNode(LastParsedToken);
                     break;
 
-                case (uint)Symbol.LPar:
+                case Symbol.LPar:
                     node = ParseExpression();
                     break;
 
                 default:
-                    // TODO: Error Handling
+                    ErrorHandler.ThrowSymbolExpectedError(
+                        "number or '('", Token.SymbolConverter(Scanner.CurrentToken.Symbol));
+                    ParsingSuccessfulUntilNow = false;
                     break;
             }
 
-            return node;
+            return node ?? new TokenNode(new Token((uint)Symbol.IllegalSy));
         }
 
         private TokenNode ParseExpression()
         {
             ParseSymbol(Symbol.LPar);
-            var result = ParseSymbol(new ExpressionParser());
+            var result = ParseSymbol<ExpressionParser>();
             ParseSymbol(Symbol.RPar);
             return result;
         }

@@ -1,24 +1,30 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using Ronin.Compiler.ErrorHandling;
 using Ronin.Compiler.Parsing.AST;
 using Ronin.Core;
+using Ronin.Core.ErrorHandling;
 
 namespace Ronin.Compiler.Parsing
 {
-    public abstract class Parser
+    public abstract class Parser : IParser<TokenNode>
     {
         private Token _lastParsedToken;
         protected readonly IScanner Scanner;
+        protected readonly IErrorHandler ErrorHandler;
 
         /// <summary>
         /// true if parse() was not called yet or parsing was successful, false otherwise.
         /// </summary>
         public bool ParsingSuccessfulUntilNow { get; protected set; } = true;
 
-        protected Token LastParsedToken => _lastParsedToken;
+        protected ref readonly Token LastParsedToken => ref _lastParsedToken;
 
         protected Parser()
         {
-            Scanner = ServiceManager.Instance.GetService<IScanner>() ?? throw new AccessViolationException("No IScanner Service Registered");
+            var serviceManager = ServiceManager.Instance;
+            Scanner = serviceManager.GetService<IScanner>() ?? throw new AccessViolationException("No IScanner Service Registered");
+            ErrorHandler = serviceManager.GetService<IErrorHandler>() ?? throw new AccessViolationException("No IErrorHandler Service Registered");
         }
 
         public abstract TokenNode Parse();
@@ -36,7 +42,9 @@ namespace Ronin.Compiler.Parsing
 
                 if (!ParsingSuccessfulUntilNow)
                 {
-                    // TODO: ErrorHandling
+                    ErrorHandler.ThrowSymbolExpectedError(
+                        symbol.ToString(),
+                        Token.SymbolConverter(_lastParsedToken.Symbol));
                 }
             }
 
@@ -56,6 +64,16 @@ namespace Ronin.Compiler.Parsing
         }
 
         /// <summary>
+        /// Parses a non-terminal symbol represented by an extra parser.
+        /// This Parser is specified through the type param and the instance will be created
+        /// automatically
+        /// </summary>
+        /// <typeparam name="T">Type of the parser</typeparam>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected TokenNode ParseSymbol<T>() where T : Parser, new() => ParseSymbol(new T());
+
+        /// <summary>
         /// Parses a number.
         /// </summary>
         /// <returns>The value of the parsed number</returns>
@@ -70,18 +88,23 @@ namespace Ronin.Compiler.Parsing
             if (ParsingSuccessfulUntilNow)
             {
                 _lastParsedToken = Scanner.CurrentToken;
-                var currentSymbol = _lastParsedToken.Symbol;
-                bool symbolFound = currentSymbol == (uint) firstOption;
+                var currentSymbol = (Symbol) _lastParsedToken.Symbol;
+                bool symbolFound = currentSymbol == firstOption;
 
                 foreach (var option in furtherOptions)
-                    symbolFound = symbolFound || currentSymbol == (uint) option;
+                {
+                    symbolFound = symbolFound || currentSymbol == option;
+                }
 
                 ParsingSuccessfulUntilNow = symbolFound;
 
                 if (!symbolFound)
                 {
                     // TODO Optimize Smybol not found
-                    // ErrorHandler.ThrowSymbolExpectedError(firstOption, _lastParsedToken.Symbol);
+                    ErrorHandler.ThrowSymbolExpectedError(
+                            firstOption.ToString(),
+                            Token.SymbolConverter(_lastParsedToken.Symbol)
+                        );
                 }
             }
 

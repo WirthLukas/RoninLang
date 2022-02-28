@@ -5,6 +5,7 @@ using Ronin.Compiler.IO;
 using Ronin.Compiler.Parsing;
 using Ronin.Compiler.Scanning;
 using Ronin.Core;
+using Ronin.Core.ErrorHandling;
 
 namespace Ronin.Repl
 {
@@ -18,11 +19,13 @@ namespace Ronin.Repl
             while (text != "break()")
             {
                 Console.Write("ronin > ");
-                text = Console.ReadLine();
+                text = Console.ReadLine() ?? "";
 
                 if (text != "break()")
                 {
-                    var scanner = new Scanner(new StringSourceReader(text));
+                    var sourceReader = new StringSourceReader(text);
+                    var errorHandler = new ErrorHandler(sourceReader);
+                    var scanner = new Scanner(sourceReader, errorHandler, new RoninNameManager(sourceReader));
                     scanner.NextToken();
                     //foreach (var token in MakeTokens(scanner))
                     //{
@@ -31,6 +34,7 @@ namespace Ronin.Repl
 
                     //Console.WriteLine();
                     ServiceManager.Instance.Reset<IScanner>(scanner);
+                    ServiceManager.Instance.Reset<IErrorHandler>(errorHandler);
                     var parser = new RoninParser();
                     var result = parser.Parse();
                     Console.WriteLine(result);

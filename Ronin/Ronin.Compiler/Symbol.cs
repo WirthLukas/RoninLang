@@ -6,13 +6,16 @@ namespace Ronin.Compiler
         // Special
         NoSy, EofSy, IllegalSy,
 
+        // Keywords
+        Var,
+
         // Classes
-        Number,
+        Number, Identifier,
 
         /// Arithmethic
         Plus, Minus, Mul, Div,
 
         // Delimiters
-        LPar, RPar,
+        Assign, LPar, RPar,
     }
 }

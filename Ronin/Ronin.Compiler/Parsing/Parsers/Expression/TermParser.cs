@@ -6,17 +6,17 @@ namespace Ronin.Compiler.Parsing.Parsers.Expression
     {
         public override TokenNode Parse()
         {
-            var left = ParseSymbol(new FactorParser());
-            var currentSymbol = Scanner.CurrentToken.Symbol;
+            var left = ParseSymbol<FactorParser>();
+            var currentSymbol = (Symbol) Scanner.CurrentToken.Symbol;
 
-            while (currentSymbol == (uint)Symbol.Mul || currentSymbol == (uint)Symbol.Div)
+            while (currentSymbol == Symbol.Mul || currentSymbol == Symbol.Div)
             {
                 ParseAlternatives(Symbol.Mul, Symbol.Div);
                 // should be true, because scanner had the token
                 var operatorToken = LastParsedToken;
-                var right = ParseSymbol(new FactorParser());
+                var right = ParseSymbol<FactorParser>();
                 left = new BinOpNode(operatorToken, left, right);
-                currentSymbol = Scanner.CurrentToken.Symbol;
+                currentSymbol = (Symbol) Scanner.CurrentToken.Symbol;
             }
 
             return left;
