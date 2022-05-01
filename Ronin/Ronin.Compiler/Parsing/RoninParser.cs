@@ -1,5 +1,6 @@
 ﻿using Ronin.Compiler.Parsing.AST;
 using Ronin.Compiler.Parsing.Parsers.Expression;
+using Ronin.Compiler.Parsing.Parsers.Types;
 
 namespace Ronin.Compiler.Parsing
 {
@@ -7,6 +8,11 @@ namespace Ronin.Compiler.Parsing
     {
         public override TokenNode Parse()
         {
+            if ((Symbol) CurrentToken.Symbol == Symbol.Var)
+            {
+                return ParseSymbol<VariableDeclarationParser>();
+            }
+
             return ParseSymbol(new ExpressionParser());
         }
     }

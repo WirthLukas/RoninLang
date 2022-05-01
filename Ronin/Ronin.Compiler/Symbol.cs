@@ -16,6 +16,6 @@ namespace Ronin.Compiler
         Plus, Minus, Mul, Div,
 
         // Delimiters
-        Assign, LPar, RPar,
+        Assign, LPar, RPar, Semicolon
     }
 }

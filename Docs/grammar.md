@@ -8,29 +8,17 @@ $string: '"'{nodoublequotes}'"'
 
 ## Grammar G(Ronin)
 
-/*
-Ronin                       =   [ModuleDef] MainDef
-ModuleDef                  =   "module" $identifier ";"
-MainDef                     =   "fun" " " ("Main" | "main") "(" ")" [TypeDef] Block
+Ronin			    =	Expression | Statement
 
-TypeDef                     =   ":" Type
-Type                        =   "void" | "int"
+Statement           =   VariableDeclaration ";"
 
-Block                       =   BracketBlock | ArrowBlock
-ArrowBlock                  =   "=" ">" Statement
-BracketBlock                =   "{" {Statement} "}"
+VariableDeclaration =   "var" $identifier "=" Expression
+VariableAccess      =   $identifier
 
-Statement                   =   VariableDeclaration ";"
-
-VariableDeclaration         =   ("var" | "val") $identifier ([TypeDef] "=" Expression | TypeDef)
-*/
-
-Ronin			    =	Expression
-
-Expression                  =   AddExpression
-AddExpression		    =	Term {AddOp Term}
+Expression          =   AddExpression
+AddExpression		=	Term {AddOp Term}
 Term			    = 	Factor {MulOp Factor}
-Factor			    =	$number | AddOp Factor | "(" Expression ")"
+Factor			    =	$number | VariableAccess | AddOp Factor | "(" Expression ")"
 
-AddOp			    =	"+" | "-"
-MulOp			    =	"*" | "/"
+[Inline] AddOp		=	"+" | "-"
+[Inline] MulOp		=	"*" | "/"

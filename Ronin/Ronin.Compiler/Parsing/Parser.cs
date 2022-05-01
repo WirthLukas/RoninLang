@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using Ronin.Compiler.ErrorHandling;
 using Ronin.Compiler.Parsing.AST;
+using Ronin.Compiler.Semantics;
 using Ronin.Core;
 using Ronin.Core.ErrorHandling;
 
@@ -12,6 +13,7 @@ namespace Ronin.Compiler.Parsing
         private Token _lastParsedToken;
         protected readonly IScanner Scanner;
         protected readonly IErrorHandler ErrorHandler;
+        protected readonly SymbolTable SymbolTable;
 
         /// <summary>
         /// true if parse() was not called yet or parsing was successful, false otherwise.
@@ -19,12 +21,14 @@ namespace Ronin.Compiler.Parsing
         public bool ParsingSuccessfulUntilNow { get; protected set; } = true;
 
         protected ref readonly Token LastParsedToken => ref _lastParsedToken;
+        protected ref readonly Token CurrentToken => ref Scanner.CurrentToken;
 
         protected Parser()
         {
             var serviceManager = ServiceManager.Instance;
             Scanner = serviceManager.GetService<IScanner>() ?? throw new AccessViolationException("No IScanner Service Registered");
             ErrorHandler = serviceManager.GetService<IErrorHandler>() ?? throw new AccessViolationException("No IErrorHandler Service Registered");
+            SymbolTable = serviceManager.GetService<SymbolTable>() ?? throw new AccessViolationException("No SymbolTable Service Registered");
         }
 
         public abstract TokenNode Parse();
@@ -33,7 +37,7 @@ namespace Ronin.Compiler.Parsing
         /// Parses a terminal symbol
         /// </summary>
         /// <param name="symbol">Symbol to be parsed</param>
-        protected void ParseSymbol(Symbol symbol)
+        protected Token ParseSymbol(Symbol symbol, Action<IErrorHandler>? raiseErrorAction = null)
         {
             if (ParsingSuccessfulUntilNow)
             {
@@ -42,13 +46,21 @@ namespace Ronin.Compiler.Parsing
 
                 if (!ParsingSuccessfulUntilNow)
                 {
-                    ErrorHandler.ThrowSymbolExpectedError(
-                        symbol.ToString(),
-                        Token.SymbolConverter(_lastParsedToken.Symbol));
+                    if (raiseErrorAction is not null)
+                    {
+                        raiseErrorAction(ErrorHandler);
+                    }
+                    else
+                    {
+                        ErrorHandler.ThrowSymbolExpectedError(
+                            symbol.ToString(),
+                            Token.SymbolConverter(_lastParsedToken.Symbol));
+                    }
                 }
             }
 
             Scanner.NextToken();
+            return _lastParsedToken;
         }
 
         /// <summary>
@@ -83,7 +95,7 @@ namespace Ronin.Compiler.Parsing
             return _lastParsedToken.Value ?? 0;
         }
 
-        protected void ParseAlternatives(Symbol firstOption, params Symbol[] furtherOptions)
+        protected Token ParseAlternatives(Symbol firstOption, params Symbol[] furtherOptions)
         {
             if (ParsingSuccessfulUntilNow)
             {
@@ -109,6 +121,7 @@ namespace Ronin.Compiler.Parsing
             }
 
             Scanner.NextToken();
+            return _lastParsedToken;
         }
     }
 }

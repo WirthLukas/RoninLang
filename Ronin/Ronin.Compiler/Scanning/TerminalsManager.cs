@@ -73,6 +73,11 @@ namespace Ronin.Compiler.Scanning
                     sourceReader.NextChar();
                     break;
 
+                case ';':
+                    result = Symbol.Semicolon;
+                    sourceReader.NextChar();
+                    break;
+
                 default:
                     result = Symbol.IllegalSy;
                     sourceReader.NextChar();

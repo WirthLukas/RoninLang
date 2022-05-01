@@ -10,12 +10,16 @@ namespace Ronin.Compiler.Parsing.Parsers.Expression
         {
             TokenNode? node = null;
 
-            switch ((Symbol) Scanner.CurrentToken.Symbol)
+            switch ((Symbol) CurrentToken.Symbol)
             {
                 case Symbol.Plus:
                 case Symbol.Minus:
                     ParseAlternatives(Symbol.Plus, Symbol.Minus);
                     node = new UnaryOpNode(LastParsedToken, ParseSymbol<FactorParser>());
+                    break;
+
+                case Symbol.Identifier:
+                    node = ParseSymbol<VariableAccessParser>();
                     break;
 
                 case Symbol.Number:

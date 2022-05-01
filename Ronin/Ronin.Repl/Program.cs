@@ -4,6 +4,7 @@ using Ronin.Compiler;
 using Ronin.Compiler.IO;
 using Ronin.Compiler.Parsing;
 using Ronin.Compiler.Scanning;
+using Ronin.Compiler.Semantics;
 using Ronin.Core;
 using Ronin.Core.ErrorHandling;
 
@@ -15,6 +16,7 @@ namespace Ronin.Repl
         {
             Token.SymbolConverter = symbol => ((Symbol) symbol).ToString();
             string text = "";
+            var symbolTable = new SymbolTable();
 
             while (text != "break()")
             {
@@ -35,6 +37,7 @@ namespace Ronin.Repl
                     //Console.WriteLine();
                     ServiceManager.Instance.Reset<IScanner>(scanner);
                     ServiceManager.Instance.Reset<IErrorHandler>(errorHandler);
+                    ServiceManager.Instance.Reset(symbolTable);
                     var parser = new RoninParser();
                     var result = parser.Parse();
                     Console.WriteLine(result);

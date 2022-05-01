@@ -6,11 +6,6 @@ namespace Ronin.Compiler
 {
     public class RoninNameManager : NameManager
     {
-        private static readonly Dictionary<string, Symbol> KeywordsToSymbolMap = new()
-        {
-            {"var", Symbol.Var}
-        };
-
         public RoninNameManager(ISourceReader sourceReader) : base(sourceReader)
         {
         }
@@ -34,7 +29,7 @@ namespace Ronin.Compiler
         public override Token ReadName()
         {
             string name = base.ReadString();
-            Symbol readSymbol = GetSymbolOf(name);
+            Symbol readSymbol = KeywordTable.GetSymbolOf(name);
 
             var token = new Token((uint) readSymbol, text: name);
 
@@ -44,11 +39,6 @@ namespace Ronin.Compiler
             //}
 
             return token;
-        }
-
-        private Symbol GetSymbolOf(string s)
-        {
-            return KeywordsToSymbolMap.ContainsKey(s) ? KeywordsToSymbolMap[s] : Symbol.Identifier;
         }
 
         public override string GetStringName()

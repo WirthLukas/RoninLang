@@ -23,5 +23,8 @@ namespace Ronin.Core.ErrorHandling
         public static readonly ErrorType IntegerOverflow = new (1, ErrorClass.Lexical, "Integer overflow");
 
         public static readonly ErrorType SymbolExpected = new (21, ErrorClass.Syntax, "{0} expected but found {1}");
+
+        public static readonly ErrorType NameUndefined = new (51, ErrorClass.Semantical, "Identifier {0} is not defined in this context");
+        public static readonly ErrorType NameAlreadyDefined = new(54, ErrorClass.Semantical, "Identifier {0} is already defined");
     }
 }

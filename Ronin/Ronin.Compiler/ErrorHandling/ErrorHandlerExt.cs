@@ -14,5 +14,15 @@ namespace Ronin.Compiler.ErrorHandling
                     new[] { expectedSymbol, actualSymbol }
                 )
             );
+
+        public static void ThrowNameAlreadyDefined(this IErrorHandler @this, string variableName)
+        {
+            @this.Raise(new Error(ErrorType.NameAlreadyDefined, variableName));
+        }
+
+        public static void ThrowNameUndefined(this IErrorHandler @this, string variableName)
+        {
+            @this.Raise(new Error(ErrorType.NameUndefined, variableName));
+        }
     }
 }
