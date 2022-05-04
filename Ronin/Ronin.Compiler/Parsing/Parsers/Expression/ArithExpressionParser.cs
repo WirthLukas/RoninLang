@@ -3,7 +3,7 @@ using Ronin.Core;
 
 namespace Ronin.Compiler.Parsing.Parsers.Expression
 {
-    public class AddExpressionParser : Parser
+    public class ArithExpressionParser : Parser
     {
         public override TokenNode Parse()
         {

@@ -24,7 +24,6 @@ internal class VariableDeclarationParser : Parser
 
         ParseSymbol(Symbol.Assign);
         TokenNode valueNode = ParseSymbol<ExpressionParser>();
-        ParseSymbol(Symbol.Semicolon);
         return new VariableAssignNode(identifierToken, valueNode);
     }
 }

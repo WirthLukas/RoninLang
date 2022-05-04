@@ -25,6 +25,7 @@ namespace Ronin.Compiler.Parsing
 
         protected Parser()
         {
+            
             var serviceManager = ServiceManager.Instance;
             Scanner = serviceManager.GetService<IScanner>() ?? throw new AccessViolationException("No IScanner Service Registered");
             ErrorHandler = serviceManager.GetService<IErrorHandler>() ?? throw new AccessViolationException("No IErrorHandler Service Registered");

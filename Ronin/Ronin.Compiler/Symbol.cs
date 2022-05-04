@@ -7,15 +7,21 @@ namespace Ronin.Compiler
         NoSy, EofSy, IllegalSy,
 
         // Keywords
-        Var,
+        Var, If, Else,
 
         // Classes
         Number, Identifier,
 
-        /// Arithmethic
+        // Arithmethic
         Plus, Minus, Mul, Div,
 
+        // Relational Operators
+        LessThan, GreatherThan, Equals, LTEquals, GTEquals, NotEquals,
+
+        // Boolean Operators
+        Not, And, Or,
+
         // Delimiters
-        Assign, LPar, RPar, Semicolon
+        Assign, LPar, RPar, Semicolon, LBracket, RBracket
     }
 }

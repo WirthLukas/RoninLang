@@ -48,19 +48,88 @@ namespace Ronin.Compiler.Scanning
                     sourceReader.NextChar();
                     break;
 
-                case '=':
-                    //sourceReader.NextChar();
-
-                    //if (sourceReader.CurrentChar == '=')
-                    //{
-
-                    //}
-                    //else
-                    //{
-                        
-                    //}
-                    result = Symbol.Assign;
+                case '<':
                     sourceReader.NextChar();
+
+                    if (sourceReader.CurrentChar == '=')
+                    {
+                        result = Symbol.LTEquals;
+                        sourceReader.NextChar();
+                    }
+                    else
+                    {
+                        result = Symbol.GreatherThan;
+                    }
+
+                    break;
+
+                case '>':
+                    sourceReader.NextChar();
+
+                    if (sourceReader.CurrentChar == '=')
+                    {
+                        result = Symbol.GTEquals;
+                        sourceReader.NextChar();
+                    }
+                    else
+                    {
+                        result = Symbol.GreatherThan;
+                    }
+
+                    break;
+
+                case '!':
+                    sourceReader.NextChar();
+
+                    if (sourceReader.CurrentChar == '=')
+                    {
+                        result = Symbol.NotEquals;
+                        sourceReader.NextChar();
+                    }
+                    else
+                    {
+                        result = Symbol.Not;
+                    }
+
+                    break;
+
+                case '=':
+                    sourceReader.NextChar();
+
+                    if (sourceReader.CurrentChar == '=')
+                    {
+                        result = Symbol.Equals;
+                        sourceReader.NextChar();
+                    }
+                    else
+                    {
+                        result = Symbol.Assign;
+                    }
+                    
+                    break;
+
+                case '&':
+                    sourceReader.NextChar();
+
+                    if (sourceReader.CurrentChar == '&')
+                    {
+                        result = Symbol.And;
+                        sourceReader.NextChar();
+                    }
+
+                    // TODO What is if only 1 &
+
+                    break;
+
+                case '|':
+                    sourceReader.NextChar();
+
+                    if (sourceReader.CurrentChar == '!')
+                    {
+                        result = Symbol.Or;
+                        sourceReader.NextChar();
+                    }
+
                     break;
 
                 case '(':
@@ -70,6 +139,16 @@ namespace Ronin.Compiler.Scanning
 
                 case ')':
                     result = Symbol.RPar;
+                    sourceReader.NextChar();
+                    break;
+
+                case '{':
+                    result = Symbol.LBracket;
+                    sourceReader.NextChar();
+                    break;
+
+                case '}':
+                    result = Symbol.RBracket;
                     sourceReader.NextChar();
                     break;
 

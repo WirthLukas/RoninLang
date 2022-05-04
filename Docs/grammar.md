@@ -8,17 +8,25 @@ $string: '"'{nodoublequotes}'"'
 
 ## Grammar G(Ronin)
 
-Ronin			    =	Expression | Statement
+Ronin			    =	Statement
 
-Statement           =   VariableDeclaration ";"
+Statement           =   VariableDeclaration ";" | Expression ";" | If
+
+Block               =   "{" { Statement } "}"
 
 VariableDeclaration =   "var" $identifier "=" Expression
 VariableAccess      =   $identifier
 
-Expression          =   AddExpression
-AddExpression		=	Term {AddOp Term}
+If                  =   "if" "(" Expression ")" Block ["else" Block]
+
+Expression          =   NotOp CompExpression | CompExpression [BoolOP CompExpression]
+CompExpression      =   ArithExpression [RelOP ArithExpression]
+ArithExpression		=	Term {AddOp Term}
 Term			    = 	Factor {MulOp Factor}
 Factor			    =	$number | VariableAccess | AddOp Factor | "(" Expression ")"
 
+[Inline] NotOp      =   "!"
+[Inline] BoolOp     =   "&&" | "||"
+[Inline] RelOp      =   "<" | "<=" | "==" | "=>" | ">" | "!="
 [Inline] AddOp		=	"+" | "-"
 [Inline] MulOp		=	"*" | "/"
