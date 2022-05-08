@@ -5,6 +5,7 @@ namespace Ronin.Core.ErrorHandling
     {
         ErrorClass ErrorClass { get; }
         int LineNumber { get; set; }
+        int Column { get; set; }
         int Number { get; }
         string Message { get; }
     }

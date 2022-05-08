@@ -11,6 +11,7 @@ namespace Ronin.Compiler.ErrorHandling
 
         public ErrorClass ErrorClass => _errorType.ErrorClass;
         public int LineNumber { get; set; }
+        public int Column { get; set; }
         public int Number => _errorType.ErrorNumber;
         public ErrorType ErrorType => _errorType;
 

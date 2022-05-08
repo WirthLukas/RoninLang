@@ -6,7 +6,7 @@ namespace Ronin.Core.ErrorHandling
 {
     public class ErrorHandler : IErrorHandler
     {
-        private readonly List<IError> _errors = new List<IError>();
+        private readonly List<IError> _errors = new ();
         private readonly ISourceReader _sourceReader;
 
         public int Count => _errors.Count;
@@ -20,8 +20,9 @@ namespace Ronin.Core.ErrorHandling
         public void Raise(IError e)
         {
             e.LineNumber = _sourceReader.CurrentLine;
+            e.Column = _sourceReader.CurrentCol;
             _errors.Add(e);
-            Console.Error.WriteLine($"{e.ErrorClass}: {e.LineNumber} : {e.Message}");
+            Console.Error.WriteLine($"{e.ErrorClass} in line {e.LineNumber} at {e.Column} : {e.Message}");
         }
     }
 }
