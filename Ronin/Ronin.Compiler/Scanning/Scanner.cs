@@ -1,63 +1,59 @@
-﻿using System;
+﻿using Ronin.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
-using Ronin.Core;
-using Ronin.Core.ErrorHandling;
 
-namespace Ronin.Compiler.Scanning
+namespace Ronin.Compiler.Scanning;
+
+public class Scanner : IScanner
 {
-    public class Scanner : IScanner
+    private readonly List<IScannerRule> _rules = new();
+    private readonly ISourceReader _sourceReader;
+    private IScannerRule? _noMatchRule;
+    private Token _currentToken;
+
+    public ref readonly Token CurrentToken => ref _currentToken;
+
+    public Scanner(ISourceReader sourceReader)
     {
-        private readonly ISourceReader _sourceReader;
-        private readonly IErrorHandler _errorHandler;
-        private readonly NameManager _nameManager;
-        private Token _currentToken;
+        _sourceReader = sourceReader ?? throw new ArgumentNullException(nameof(sourceReader));
+    }
 
-        public ref readonly Token CurrentToken => ref _currentToken;
+    public IScanner AddRule(IScannerRule rule)
+    {
+        _rules.Add(rule ?? throw new ArgumentNullException(nameof(rule)));
+        return this;
+    }
 
-        public Scanner(ISourceReader sourceReader, IErrorHandler errorHandler, NameManager nameManager)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public IScanner AddRule<T>() where T : IScannerRule, new() => AddRule(new T());
+
+    public IScanner AddRuleForNoMatch(IScannerRule rule)
+    {
+        _noMatchRule = rule ?? throw new ArgumentNullException(nameof(rule));
+        return this;
+    }
+
+    public ref readonly Token NextToken()
+    {
+        if (_rules.Count == 0) throw new Exception("No Rules in Scanner");
+
+        Token? result;
+
+        do
         {
-            _sourceReader = sourceReader ?? throw new ArgumentNullException(nameof(sourceReader));
-            _errorHandler = errorHandler ?? throw new ArgumentNullException(nameof(errorHandler));
-            _nameManager = nameManager ?? throw new ArgumentNullException(nameof(nameManager));
-        }
+            IScannerRule? rule = _rules.FirstOrDefault(sr => sr.Match(_sourceReader));
 
-        public ref readonly Token NextToken()
-        {
-            bool done = false;
-
-            do
+            if (rule is null && _noMatchRule is not null)
             {
-                if (_sourceReader.CurrentChar == null)
-                {
-                    _currentToken = new Token((int)Symbol.EofSy);
-                    done = true;
-                }
-                else if (char.IsDigit(_sourceReader.CurrentChar.Value))
-                {
-                    _currentToken = HandleDigit(_sourceReader, _errorHandler);
-                    done = true;
-                }
-                else if (_nameManager.IsValidStartOfName(_sourceReader.CurrentChar.Value))
-                {
-                    _currentToken = _nameManager.ReadName();
-                    done = true;
-                }
-                else
-                {
-                    _currentToken = HandleTerminals(_sourceReader);
-                }
-            } while (!done && _currentToken.Symbol == (uint) Symbol.NoSy);
+                rule = _noMatchRule;
+            }
 
-            return ref _currentToken;
-        }
+            result = rule?.GetToken(_sourceReader);
+        } while (result is null || result.Value.Symbol is (uint)Symbol.NoSy);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Token HandleDigit(ISourceReader sourceReader, IErrorHandler errorHandler) =>
-            new Token(
-                symbol: (uint) Symbol.Number,
-                value: NumberAnalyzer.ReadNumber(sourceReader, errorHandler));
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Token HandleTerminals(ISourceReader sourceReader) => new Token((uint) TerminalsManager.ReadTerminalSymbol(sourceReader));
+        _currentToken = result ?? throw new Exception("Token is null");
+        return ref _currentToken;
     }
 }

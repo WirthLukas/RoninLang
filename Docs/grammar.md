@@ -10,14 +10,16 @@ $string: '"'{nodoublequotes}'"'
 
 Ronin			    =	Statement
 
-Statement           =   VariableDeclaration ";" | Expression ";" | If
+Statement           =   VariableDeclaration ";" | Expression ";" | IfStatement
 
 Block               =   "{" { Statement } "}"
 
 VariableDeclaration =   "var" $identifier "=" Expression
 VariableAccess      =   $identifier
 
-If                  =   "if" "(" Expression ")" Block ["else" Block]
+IfStatement         =   If { "else" If } [ Else ]
+If                  =   "if" "(" Expression ")" Block
+Else                =   "else" Block
 
 Expression          =   NotOp CompExpression | CompExpression [BoolOP CompExpression]
 CompExpression      =   ArithExpression [RelOP ArithExpression]

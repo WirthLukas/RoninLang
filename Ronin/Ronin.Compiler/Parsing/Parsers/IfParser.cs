@@ -8,25 +8,37 @@ public class IfParser : Parser
 {
     public override TokenNode Parse()
     {
-        ParseSymbol(Symbol.If);
-        ParseSymbol(Symbol.LPar);
         var cases = new List<IfNode.Case>();
+        TokenNode? elseBlock = null;
 
-        var conditionExpr = ParseSymbol<ExpressionParser>();
+        cases.Add(ParseIfPart());
 
-        ParseSymbol(Symbol.RPar);
-
-        var blockNode = ParseSymbol<BlockParser>();
-        cases.Add(new IfNode.Case(conditionExpr, blockNode));
-
-        TokenNode? elseCase = null;
-
-        if ((Symbol) CurrentToken.Symbol == Symbol.Else)
+        while ((Symbol) CurrentToken.Symbol == Symbol.Else && elseBlock is null)
         {
             ParseSymbol(Symbol.Else);
-            elseCase = ParseSymbol<BlockParser>();
+
+            if ((Symbol)(CurrentToken.Symbol) == Symbol.If)
+            {
+                cases.Add(ParseIfPart());
+            }
+            else
+            {
+                elseBlock = ParseSymbol<BlockParser>();
+            }
         }
 
-        return new IfNode(cases, elseCase);
+        return new IfNode(cases, elseBlock);
+    }
+
+    private IfNode.Case ParseIfPart()
+    {
+        ParseSymbol(Symbol.If);
+        ParseSymbol(Symbol.LPar);
+
+        TokenNode conditionExpr = ParseSymbol<ExpressionParser>();
+        ParseSymbol(Symbol.RPar);
+
+        TokenNode blockNode = ParseSymbol<BlockParser>();
+        return new IfNode.Case(conditionExpr, blockNode);
     }
 }

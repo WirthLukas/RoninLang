@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Ronin.Core;
 
-namespace Ronin.Core
+public interface ISourceReader : ISourcePeeker, ISourcePosition
 {
-    public interface ISourceReader
-    {
-        int CurrentCol { get; }
-        int CurrentLine { get; }
-        char? CurrentChar { get; }
+    char? NextChar();
+}
 
-        char? NextChar();
-    }
+public interface ISourcePeeker : ISourcePosition
+{
+    char? CurrentChar { get; }
+
+    char? PeekNextChar();
+    char[] PeekNextChars(int amount);
+}
+
+public interface ISourcePosition
+{
+    int CurrentCol { get; }
+    int CurrentLine { get; }
 }
