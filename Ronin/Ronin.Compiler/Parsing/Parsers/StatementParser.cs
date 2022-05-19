@@ -1,11 +1,6 @@
-﻿using Ronin.Compiler.Parsing.AST;
-using Ronin.Compiler.Parsing.Parsers.Expression;
+﻿using Ronin.Compiler.Parsing.Parsers.Expression;
 using Ronin.Compiler.Parsing.Parsers.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Ronin.Core;
 
 namespace Ronin.Compiler.Parsing.Parsers;
 
@@ -23,6 +18,15 @@ public class StatementParser : Parser
         else if ((Symbol)CurrentToken.Symbol == Symbol.If)
         {
             result = ParseSymbol<IfParser>();
+        }
+        else if ((Symbol)CurrentToken.Symbol == Symbol.While)
+        {
+            result = ParseSymbol<WhileParser>();
+        }
+        else if ((Symbol)CurrentToken.Symbol == Symbol.Do)
+        {
+            result = ParseSymbol<DoWhileParser>();
+            ParseSymbol(Symbol.Semicolon);
         }
         else
         {

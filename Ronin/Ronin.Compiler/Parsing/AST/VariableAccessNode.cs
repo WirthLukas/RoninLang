@@ -5,16 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ronin.Compiler.Parsing.AST
+namespace Ronin.Compiler.Parsing.AST;
+
+// Probably just a TokenNOde?
+public class VariableAccessNode : TokenNode
 {
-    // Probably just a TokenNOde?
-    internal class VariableAccessNode : TokenNode
+
+    public VariableAccessNode(Token identifier) : base(identifier)
     {
-
-        public VariableAccessNode(Token identifier) : base(identifier)
-        {
-        }
-
-        public override string ToString() => $"{{Variable:{Token.Text}}}";
     }
+
+    public override string ToString() => $"{{Variable:{Token.Text}}}";
 }

@@ -7,10 +7,10 @@ namespace Ronin.Compiler
         NoSy, EofSy, IllegalSy,
 
         // Keywords
-        Var, If, Else,
+        Var, If, Else, While, Do, True, False,
 
         // Classes
-        Number, Identifier,
+        Number, Identifier, Bool,
 
         // Arithmethic
         Plus, Minus, Mul, Div,

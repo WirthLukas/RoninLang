@@ -6,7 +6,9 @@ using Ronin.Compiler.Parsing;
 using Ronin.Compiler.Scanning;
 using Ronin.Compiler.Semantics;
 using Ronin.Core;
+using Ronin.Core.CodeGeneration;
 using Ronin.Core.ErrorHandling;
+using Ronin.Repl.JS;
 
 namespace Ronin.Repl
 {
@@ -27,6 +29,7 @@ namespace Ronin.Repl
                 {
                     var sourceReader = new StringSourceReader(text);
                     var errorHandler = new ErrorHandler(sourceReader);
+                    var nameManager = new RoninNameManager(sourceReader);
                     var scanner = new Scanner(sourceReader)
                         .AddRule<IgnoreCommentRule>()
                         .AddRule<IgnoreWhitespacesRule>()
@@ -38,7 +41,8 @@ namespace Ronin.Repl
                         .AddRule(new SingleCharRule('(', Symbol.LPar))
                         .AddRule(new SingleCharRule(')', Symbol.RPar))
                         .AddRule(new SingleCharRule(';', Symbol.Semicolon))
-                        .AddRule(new IdentifierRule(new RoninNameManager(sourceReader)))
+                        .AddRule(new BoolRule(nameManager))
+                        .AddRule(new IdentifierRule(nameManager))
                         .AddRule(new NumberLiteralRule(errorHandler))
                         .AddRule(new EndOfSourceRule((uint)Symbol.EofSy))
                         .AddRuleForNoMatch(new NoMatchFoundRule((uint)Symbol.IllegalSy));
@@ -56,7 +60,8 @@ namespace Ronin.Repl
                     ServiceManager.Instance.Reset(symbolTable);
                     var parser = new RoninParser();
                     var result = parser.Parse();
-                    Console.WriteLine(result);
+                    //Console.WriteLine(result);
+                    Console.WriteLine(new CodeGenerator(result).Convert(new ConverterContext()));
                 }
             }
         }

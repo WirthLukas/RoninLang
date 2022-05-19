@@ -2,7 +2,7 @@
 
 namespace Ronin.Compiler.Parsing.AST;
 
-internal class VariableAssignNode : TokenNode
+public class VariableAssignNode : TokenNode
 {
     public TokenNode Value;
     // Identifiy if var or val

@@ -7,20 +7,30 @@ public class CompExpressionParser : Parser
 {
     public override TokenNode Parse()
     {
-        var left = ParseSymbol<ArithExpressionParser>();
-        var currentSymbol = (Symbol) CurrentToken.Symbol;
+        TokenNode node;
 
-        if (currentSymbol is Symbol.LessThan or Symbol.LTEquals
-                          or Symbol.Equals or Symbol.GTEquals
-                          or Symbol.GreatherThan or Symbol.NotEquals)
+        if (CurrentToken.Symbol == (uint)Symbol.Bool)
         {
-            Token tokenOperator = ParseAlternatives(Symbol.LessThan, Symbol.LTEquals, Symbol.Equals, Symbol.GTEquals,
-                              Symbol.GreatherThan, Symbol.NotEquals);
-
-            var right = ParseSymbol<ArithExpressionParser>();
-            left = new BinOpNode(tokenOperator, left, right);
+            Token boolValueToken = ParseSymbol(Symbol.Bool);
+            node = new TokenNode(boolValueToken);
         }
+        else
+        {
+            node = ParseSymbol<ArithExpressionParser>();        // left value of operation
+            var currentSymbol = (Symbol)CurrentToken.Symbol;
 
-        return left;
+            if (currentSymbol is Symbol.LessThan or Symbol.LTEquals
+                              or Symbol.Equals or Symbol.GTEquals
+                              or Symbol.GreatherThan or Symbol.NotEquals)
+            {
+                Token tokenOperator = ParseAlternatives(Symbol.LessThan, Symbol.LTEquals, Symbol.Equals, Symbol.GTEquals,
+                                  Symbol.GreatherThan, Symbol.NotEquals);
+
+                var right = ParseSymbol<ArithExpressionParser>();
+                node = new BinOpNode(tokenOperator, node, right);
+            }
+        }
+        
+        return node;
     }
 }

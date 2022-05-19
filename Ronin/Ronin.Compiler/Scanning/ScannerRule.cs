@@ -169,6 +169,23 @@ public record NumberLiteralRule(IErrorHandler ErrorHandler) : IScannerRule
     }
 }
 
+public record BoolRule(NameManager NameManager) : IScannerRule
+{
+    public Token? GetToken(ISourceReader sourceReader)
+    {
+        Token result = NameManager.ReadName();
+        // text contains the value true or false
+        var boolToken = new Token((uint)Symbol.Bool, text: result.Text); 
+        return boolToken;
+    }
+
+    public bool Match(ISourcePeeker sourcePeeker)
+    {
+        // check if there is keyword true or false
+        return NameManager.IsKeyword("true") || NameManager.IsKeyword("false");
+    }
+}
+
 public record EndOfSourceRule(uint EndOfSourceSymbol = 1) : IScannerRule
 {
     public Token? GetToken(ISourceReader sourceReader) => new Token(EndOfSourceSymbol);
