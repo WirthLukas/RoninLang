@@ -11,6 +11,7 @@ $string: '"'{nodoublequotes}'"'
 Ronin			    =	Statement
 
 Statement           =   VariableDeclaration ";"
+                        | VariableAssignment ";"
                         | Expression ";"
                         | IfStatement
                         | WhileStatement
@@ -20,6 +21,7 @@ Block               =   "{" { Statement } "}"
 
 VariableDeclaration =   "var" $identifier "=" Expression
 VariableAccess      =   $identifier
+VariableAssignment  =   VariableAccess AssignmentOp Expression
 
 IfStatement         =   If { "else" If } [ Else ]
 If                  =   "if" Condition Block
@@ -30,14 +32,15 @@ WhileStatement      =   "while" Condition Block
 DoWhileStatement    =   "do" Block "while" Condition
 
 Expression          =   NotOp CompExpression
-                        | CompExpression [BoolOP CompExpression]
+                        | CompExpression {BoolOP CompExpression}
 CompExpression      =   ArithExpression [RelOP ArithExpression] | BoolValue
 ArithExpression		=	Term {AddOp Term}
 Term			    = 	Factor {MulOp Factor}
-Factor			    =	$number | VariableAccess | AddOp Factor | "(" Expression ")"
+Factor			    =	$number | VariableAccess | AddOp Factor | "(" Expression | VariableAssignment ")"
 
 [Inline] BoolValue           =   "true" | "false"
 
+[Inline] AssignmentOp   = "=" // todo add "+=" "-=" and so on
 [Inline] NotOp      =   "!"
 [Inline] BoolOp     =   "&&" | "||"
 [Inline] RelOp      =   "<" | "<=" | "==" | "=>" | ">" | "!="

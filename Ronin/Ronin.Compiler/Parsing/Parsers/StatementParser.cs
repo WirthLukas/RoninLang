@@ -15,6 +15,11 @@ public class StatementParser : Parser
             result = ParseSymbol<VariableDeclarationParser>();
             ParseSymbol(Symbol.Semicolon);
         }
+        else if ((Symbol)CurrentToken.Symbol == Symbol.Identifier)
+        {
+            result = ParseSymbol<VariableAssignmentParser>();
+            ParseSymbol(Symbol.Semicolon);
+        }
         else if ((Symbol)CurrentToken.Symbol == Symbol.If)
         {
             result = ParseSymbol<IfParser>();

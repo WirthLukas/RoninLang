@@ -17,8 +17,7 @@ internal class TokenNodeConverter : Converter<TokenNode>
         {
             Symbol.Number => Node.Token.Value.ToString() ?? throw new AccessViolationException("No number available"),
             Symbol.Bool => Node.Token.Text ?? throw new AccessViolationException("No bool text available"),
-            _ => 
-            throw new NotSupportedException()
+            _ => throw new NotSupportedException()
         };
     }
 }

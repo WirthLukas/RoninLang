@@ -14,6 +14,6 @@ internal class VariableAssignConverter : Converter<VariableAssignNode>
     {
         string assignedValue = GetConverterFor(Node.Value).Convert(context);
 
-        return $"let {Node.Token.Text} = {assignedValue}";
+        return $"{ (Node.IncludeVariableCreation ? "let " : "") }{Node.Token.Text} = {assignedValue}";
     }
 }

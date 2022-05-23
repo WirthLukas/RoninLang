@@ -28,7 +28,13 @@ namespace Ronin.Compiler.Parsing.Parsers.Expression
                     break;
 
                 case Symbol.LPar:
-                    node = ParseExpression();
+                    ParseSymbol(Symbol.LPar);
+
+                    node = CurrentToken.Symbol == (uint)Symbol.Identifier
+                        ? ParseSymbol<VariableAssignmentParser>()
+                        : ParseSymbol<ExpressionParser>();
+
+                    ParseSymbol(Symbol.RPar);
                     break;
 
                 default:
@@ -39,14 +45,6 @@ namespace Ronin.Compiler.Parsing.Parsers.Expression
             }
 
             return node ?? new TokenNode(new Token((uint)Symbol.IllegalSy));
-        }
-
-        private TokenNode ParseExpression()
-        {
-            ParseSymbol(Symbol.LPar);
-            var result = ParseSymbol<ExpressionParser>();
-            ParseSymbol(Symbol.RPar);
-            return result;
         }
     }
 }

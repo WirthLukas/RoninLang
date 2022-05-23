@@ -18,7 +18,7 @@ namespace Ronin.Compiler.Parsing.Parsers.Expression
             {
                 node = ParseSymbol<CompExpressionParser>();
 
-                if ((Symbol) CurrentToken.Symbol is Symbol.And or Symbol.Or)
+                while ((Symbol) CurrentToken.Symbol is Symbol.And or Symbol.Or)
                 {
                     Token operatorToken = ParseAlternatives(Symbol.And, Symbol.Or);
                     TokenNode right = ParseSymbol<CompExpressionParser>();
